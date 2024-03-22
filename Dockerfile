@@ -1,5 +1,5 @@
 # hadolint ignore=DL3007
-FROM StreamOfRon/github-runner-base:latest
+FROM ghcr.io/StreamOfRon/github-runner-base:latest
 LABEL maintainer="https://github.com/StreamOfRon"
 
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache

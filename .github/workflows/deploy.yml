@@ -2,6 +2,8 @@ name: GitHub Actions Runner in Docker - Latest
 on:
   push:
     paths-ignore:
+      - .github/workflows/base.yml
+      - .github/workflows/test.yml
       - Dockerfile.base
       - README.md
     branches:
