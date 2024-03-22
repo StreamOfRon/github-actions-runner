@@ -1,6 +1,6 @@
 # hadolint ignore=DL3007
-FROM myoung34/github-runner-base:latest
-LABEL maintainer="myoung34@my.apsu.edu"
+FROM StreamOfRon/github-runner-base:latest
+LABEL maintainer="https://github.com/StreamOfRon"
 
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
 RUN mkdir -p /opt/hostedtoolcache
