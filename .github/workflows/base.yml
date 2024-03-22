@@ -5,7 +5,7 @@ on:
       - Dockerfile.base
       - .github/workflows/base.yml
     branches:
-      - main
+      - master
       - develop
   workflow_dispatch:
   #schedule:
