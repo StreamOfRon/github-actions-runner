@@ -44,7 +44,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/streamofron/github-runner-base
+            ghcr.io/streamofron/github-runner
           tags: |
             type=raw,value=ubuntu-latest,enable=${{ contains(matrix.release, 'bookworm') }}
             type=raw,value=ubuntu-${{ matrix.release }},enable={{is_default_branch}}
@@ -90,7 +90,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/streamofron/github-runner-base
+            ghcr.io/streamofron/github-runner
           tags: |
             type=raw,value=debian-latest,enable=${{ contains(matrix.release, 'bookworm') }}
             type=raw,value=debian-${{ matrix.release }},enable={{is_default_branch}}
