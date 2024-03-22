@@ -13,7 +13,7 @@ on:
 
 jobs:
   ubuntu_base_deploy:
-    runs-on: ubuntu-latest
+    runs-on: cloudswarm
     strategy:
       matrix:
         release: [jammy]
@@ -54,12 +54,12 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64  #,linux/arm64
+          platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
   debian_base_deploy:
-    runs-on: ubuntu-latest
+    runs-on: cloudswarm
     strategy:
       matrix:
         release: [bookworm]
@@ -100,6 +100,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64  #,linux/arm64
+          platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
