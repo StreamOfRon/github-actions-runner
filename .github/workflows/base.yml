@@ -5,7 +5,7 @@ on:
       - Dockerfile.base
       - .github/workflows/base.yml
     branches:
-      - master
+      - main
       - develop
   workflow_dispatch:
   #schedule:
@@ -42,7 +42,8 @@ jobs:
           images: |
             ghcr.io/streamofron/github-runner-base
           tags: |
-            type=raw,value=ubuntu-${{ matrix.release }},enable={{is_default_branch}}
+            type=raw,value=ubuntu-latest,enable={{ contains(matrix.release, 'jammy') }}
+            type=raw,value=ubuntu-${{ matrix.release }},enable=true
             type=sha,prefix=,enable=true
       - name: Build and push
         uses: docker/build-push-action@v5
@@ -87,7 +88,8 @@ jobs:
           images: |
             ghcr.io/streamofron/github-runner-base
           tags: |
-            type=raw,value=ubuntu-${{ matrix.release }},enable={{is_default_branch}}
+            type=raw,value=debian-latest,enable={{ contains(matrix.release, 'bookworm') }}
+            type=raw,value=debian-${{ matrix.release }},enable={{is_default_branch}}
             type=sha,prefix=,enable=true
       - name: Build and push
         uses: docker/build-push-action@v5
