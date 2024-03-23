@@ -64,7 +64,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   debian_base_deploy:
-    runs-on: cloudswarm
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         release: [bookworm]
