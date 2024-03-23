@@ -91,7 +91,6 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: github-runner-base
-          platforms: linux
           archs: amd64
           oci: true
           context: .
