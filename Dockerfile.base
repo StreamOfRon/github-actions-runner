@@ -1,8 +1,6 @@
 FROM debian:bookworm
 LABEL maintainer="https://github.com/StreamOfRon"
 
-ARG DUMB_INIT_VERSION="1.2.5"
-
 ENV GIT_LFS_VERSION="3.5.1"
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8

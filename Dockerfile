@@ -5,7 +5,7 @@ LABEL maintainer="https://github.com/StreamOfRon"
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
 RUN mkdir -p /opt/hostedtoolcache
 
-ARG GH_RUNNER_VERSION="2.314.1"
+ARG GH_RUNNER_VERSION="latest"
 
 ARG TARGETPLATFORM
 
