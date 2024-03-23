@@ -177,7 +177,7 @@ if [[ ${_START_DOCKER_SERVICE} == "true" ]]; then
   echo "Starting docker service"
   _PREFIX=""
   [[ ${_RUN_AS_ROOT} != "true" ]] && _PREFIX="sudo"
-  ${_PREFIX} systemctl start docker.service
+  ${_PREFIX} dockerd
 fi
 
 # Container's command (CMD) execution as runner user
