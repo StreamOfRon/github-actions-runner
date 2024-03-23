@@ -64,7 +64,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   debian_base_deploy:
-    runs-on: cloudswarm
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         release: [bookworm]
@@ -92,7 +92,7 @@ jobs:
         with:
           image: github-runner-base
           archs: amd64
-          oci: false
+          oci: true
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
