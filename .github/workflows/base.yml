@@ -92,7 +92,7 @@ jobs:
         with:
           image: github-runner-base
           archs: amd64
-          oci: true
+          oci: false
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
