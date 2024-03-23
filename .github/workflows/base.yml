@@ -23,18 +23,6 @@ jobs:
         uses: actions/checkout@master
       - name: Get GitHub organization or user
         run: echo 'ORG='$(echo $(dirname ${GITHUB_REPOSITORY}) | awk '{print tolower($0)}') >> $GITHUB_ENV
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Copy Dockerfile
-        run: cp Dockerfile.base Dockerfile.base.ubuntu-${{ matrix.release }}; sed -i.bak 's/FROM.*/FROM ubuntu:${{ matrix.release }}/' Dockerfile.base.ubuntu-${{ matrix.release }}
-      - name: 'Login to GitHub Container Registry'
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{github.actor}}
-          password: ${{secrets.GITHUB_TOKEN}}
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -45,6 +33,18 @@ jobs:
             type=raw,value=ubuntu-latest,enable=${{ contains(matrix.release, 'jammy') }}
             type=raw,value=ubuntu-${{ matrix.release }},enable=true
             type=sha,prefix=,enable=true
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Copy Dockerfile
+        run: cp Dockerfile.base Dockerfile.base.ubuntu-${{ matrix.release }}; sed -i.bak 's/FROM.*/FROM ubuntu:${{ matrix.release }}/' Dockerfile.base.ubuntu-${{ matrix.release }}
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -69,12 +69,6 @@ jobs:
         uses: actions/checkout@master
       - name: Get GitHub organization or user
         run: echo 'ORG='$(echo $(dirname ${GITHUB_REPOSITORY}) | awk '{print tolower($0)}') >> $GITHUB_ENV
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Copy Dockerfile
-        run: cp Dockerfile.base Dockerfile.base.debian-${{ matrix.release }}; sed -i.bak 's/FROM.*/FROM debian:${{ matrix.release }}/' Dockerfile.base.debian-${{ matrix.release }}
       - name: 'Login to GitHub Container Registry'
         uses: docker/login-action@v3
         with:
@@ -91,6 +85,12 @@ jobs:
             type=raw,value=debian-latest,enable=${{ contains(matrix.release, 'bookworm') }}
             type=raw,value=debian-${{ matrix.release }},enable={{is_default_branch}}
             type=sha,prefix=,enable=true
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Copy Dockerfile
+        run: cp Dockerfile.base Dockerfile.base.debian-${{ matrix.release }}; sed -i.bak 's/FROM.*/FROM debian:${{ matrix.release }}/' Dockerfile.base.debian-${{ matrix.release }}
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
