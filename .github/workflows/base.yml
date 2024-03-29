@@ -18,10 +18,10 @@ env:
 
 jobs:
   ubuntu_base_deploy:
-    runs-on: ubuntu-latest
+    runs-on: cloudswarm-github-actions-runner
     strategy:
       matrix:
-        release: [jammy, noble]
+        release: [noble]
       fail-fast: false
     steps:
       - name: Copy Repo Files
@@ -64,10 +64,10 @@ jobs:
             --disable-content-trust
 
   debian_base_deploy:
-    runs-on: ubuntu-latest
+    runs-on: cloudswarm-github-actions-runner
     strategy:
       matrix:
-        release: [bookworm, trixie]
+        release: [trixie]
       fail-fast: false
     steps:
       - name: Copy Repo Files
