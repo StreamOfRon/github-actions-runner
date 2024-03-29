@@ -46,6 +46,12 @@ jobs:
             type=raw,value=ubuntu-latest,enable=${{ contains(matrix.release, 'bookworm') }}
             type=raw,value=ubuntu-${{ matrix.release }},enable={{is_default_branch}}
             type=sha,prefix=ubuntu-,enable=true
+      - name: Log in to ghcr.io
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
       - name: Build Image
         id: build-image
         uses: redhat-actions/buildah-build@v2
@@ -92,6 +98,12 @@ jobs:
             type=raw,value=debian-latest,enable=${{ contains(matrix.release, 'bookworm') }}
             type=raw,value=debian-${{ matrix.release }},enable={{is_default_branch}}
             type=sha,prefix=debian-,enable=true
+      - name: Log in to ghcr.io
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
       - name: Build Image
         id: build-image
         uses: redhat-actions/buildah-build@v2
