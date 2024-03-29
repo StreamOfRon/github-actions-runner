@@ -21,13 +21,11 @@ jobs:
     runs-on: cloudswarm
     strategy:
       matrix:
-        release: [jammy]
+        release: [jammy, noble]
       fail-fast: false
     steps:
       - name: Copy Repo Files
         uses: actions/checkout@master
-      - name: Get GitHub organization or user
-        run: echo 'ORG='$(echo $(dirname ${GITHUB_REPOSITORY}) | awk '{print tolower($0)}') >> $GITHUB_ENV
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -67,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        release: [bookworm]
+        release: [bookworm, trixie]
       fail-fast: false
     steps:
       - name: Copy Repo Files
