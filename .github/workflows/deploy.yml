@@ -21,7 +21,7 @@ env:
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
   REGISTRY_USER: ${{ github.actor }}
   REGISTRY_PASSWORD: ${{ github.token }}
-  
+
 jobs:
   ubuntu_deploy:
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           containerfiles: |
-            Dockerfile.base.ubuntu-${{ matrix.release }}
+            Dockerfile.ubuntu-${{ matrix.release }}
       - name: Push Image
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -99,7 +99,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           containerfiles: |
-            Dockerfile.base.debian-${{ matrix.release }}
+            Dockerfile.debian-${{ matrix.release }}
       - name: Push Image
         uses: redhat-actions/push-to-registry@v2
         with:
