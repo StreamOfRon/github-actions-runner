@@ -1,11 +1,18 @@
 #!/bin/bash -ex
 GH_RUNNER_VERSION=$1
-TARGETPLATFORM=$2
 
-export TARGET_ARCH="x64"
-if [[ $TARGETPLATFORM == "linux/arm64" ]]; then
-  export TARGET_ARCH="arm64"
-fi
+case $(uname -m) in
+  x86_64 | amd64)
+    export TARGET_ARCH="x64"
+    ;;
+  aarch64 | arm64)
+    export TARGET_ARCH="arm64"
+    ;;
+  *)
+    echo "Unsupported architecture: $(uname -m)"
+    exit 1
+    ;;
+esac
 
 if [[ $GH_RUNNER_VERSION == "latest" ]] ; then
   RUNNER_URL=$(curl -s https://api.github.com/repos/actions/runner/releases/latest \
