@@ -17,30 +17,23 @@ permissions:
   contents: read
   packages: write
 
+env:
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  REGISTRY_USER: ${{ github.actor }}
+  REGISTRY_PASSWORD: ${{ github.token }}
+  
 jobs:
   ubuntu_deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        release: [jammy]
+        release: [jammy, noble]
       fail-fast: false
     steps:
       - name: Copy Repo Files
         uses: actions/checkout@master
-      - name: Get GitHub organization or user
-        run: echo 'ORG='$(echo $(dirname ${GITHUB_REPOSITORY}) | awk '{print tolower($0)}') >> $GITHUB_ENV
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
       - name: Copy Dockerfile
         run: cp Dockerfile Dockerfile.ubuntu-${{ matrix.release }}; sed -i.bak "s/FROM.*/FROM ghcr.io\/${ORG}\/github-runner-base:ubuntu-${{ matrix.release }}/" Dockerfile.ubuntu-${{ matrix.release }}
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
@@ -51,42 +44,40 @@ jobs:
             type=raw,value=ubuntu-latest,enable=${{ contains(matrix.release, 'bookworm') }}
             type=raw,value=ubuntu-${{ matrix.release }},enable={{is_default_branch}}
             type=sha,prefix=ubuntu-,enable=true
-      - name: Build and push
-        uses: docker/build-push-action@v5
+      - name: Build Image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
         with:
+          image: github-runner-base
+          archs: amd64
+          oci: true
           context: .
-          file: Dockerfile.ubuntu-${{ matrix.release }}
-          pull: true
-          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64 #,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          containerfiles: |
+            Dockerfile.base.ubuntu-${{ matrix.release }}
+      - name: Push Image
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+          extra-args: |
+            --disable-content-trust
 
   debian_deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        release: [bookworm]
+        release: [bookworm, trixie]
       fail-fast: false
     steps:
       - name: Copy Repo Files
         uses: actions/checkout@master
-      - name: Get GitHub organization or user
-        run: echo 'ORG='$(echo $(dirname ${GITHUB_REPOSITORY}) | awk '{print tolower($0)}') >> $GITHUB_ENV
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
       - name: Copy Dockerfile
         run: cp Dockerfile Dockerfile.debian-${{ matrix.release }}; sed -i.bak "s/FROM.*/FROM ghcr.io\/${ORG}\/github-runner-base:debian-${{ matrix.release }}/" Dockerfile.debian-${{ matrix.release }}
-      - name: 'Login to GitHub Container Registry'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{github.actor}}
-          password: ${{secrets.GITHUB_TOKEN}}
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
@@ -97,15 +88,25 @@ jobs:
             type=raw,value=debian-latest,enable=${{ contains(matrix.release, 'bookworm') }}
             type=raw,value=debian-${{ matrix.release }},enable={{is_default_branch}}
             type=sha,prefix=debian-,enable=true
-      - name: Build and push
-        uses: docker/build-push-action@v5
+      - name: Build Image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
         with:
+          image: github-runner-base
+          archs: amd64
+          oci: true
           context: .
-          file: Dockerfile.debian-${{ matrix.release }}
-          pull: true
-          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64 #,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          containerfiles: |
+            Dockerfile.base.debian-${{ matrix.release }}
+      - name: Push Image
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+          extra-args: |
+            --disable-content-trust
